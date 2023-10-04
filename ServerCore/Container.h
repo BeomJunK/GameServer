@@ -18,7 +18,7 @@ template<typename Key, typename Type, typename Pred = less<Key>>
 using Map = map<Key , Type , Pred , STLAllocator<pair<const Key , Type>>>;
 
 template<typename Key, typename Pred = less<Key>>
-using Set = set<Key , Pred, STLAllocator<pair<const Key>>;
+using Set = set<Key , Pred , STLAllocator<Key>>;
 
 template<typename Type>
 using Deque = deque<Type , STLAllocator<Type>>;
