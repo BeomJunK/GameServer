@@ -1,0 +1,44 @@
+#pragma once
+#include "Types.h"
+#include "Allocator.h"
+#include <vector>
+#include <list>
+#include <queue>
+#include <stack>
+#include <map>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
+using namespace std;
+
+template<typename Type>
+using Vector = vector<Type , STLAllocator<Type>>;
+
+template<typename Key, typename Type, typename Pred = less<Key>>
+using Map = map<Key , Type , Pred , STLAllocator<pair<const Key , Type>>>;
+
+template<typename Key, typename Pred = less<Key>>
+using Set = set<Key , Pred, STLAllocator<pair<const Key>>;
+
+template<typename Type>
+using Deque = deque<Type , STLAllocator<Type>>;
+
+template<typename Type, typename Container = Deque<Type>>
+using Queue = queue<Type, Container>;
+
+template<typename Type , typename Container = Deque<Type>>
+using Stack = stack<Type , Container>;
+
+
+template <class Type , class Container = Vector<Type> , class Pred = less<typename Container::value_type>>
+using Priority_queue = priority_queue<Type , Container , Pred>;
+
+using String = basic_string<char , char_traits<char> , STLAllocator<char>>;
+
+using WString = basic_string<wchar_t , char_traits<wchar_t> , STLAllocator<wchar_t>>;
+
+template<typename Key , typename Type , typename Hasher = hash<Key> , typename KeyEq = equal_to<Key>>
+using HashMap = unordered_map<Key , Type , Hasher , KeyEq , STLAllocator<pair<const Key , Type>>>;
+
+template<typename Key , typename Hasher = hash<Key> , typename KeyEq = equal_to<Key>>
+using HashSet = unordered_set<Key , Hasher , KeyEq , STLAllocator<Key>>;
