@@ -67,13 +67,13 @@ void* Memory::Allocate ( int32 size )
 	{
 		//메모리 풀링 최대크기 넘어가면 일반 할당
 		//메모리 헤더를 붙이기 전상태임
-		header = reinterpret_cast< MemoryHeader* >( ::malloc ( allocSize ) );
+		header = reinterpret_cast< MemoryHeader* >( ::_aligned_malloc ( allocSize, SLIST_ALIGNMENT) );
 	}
 	else
 	{
 		//메모리 풀에서 꺼내온다
 		//메모리 헤더를 붙이기 전상태임
-		header = _poolTable [ allocSize ]->Pop( );
+		header = _poolTable [ allocSize ]->Pop();
 	}
 
 	//메모리 헤더를 붙이기
@@ -90,8 +90,9 @@ void Memory::Release ( void* ptr )
 	if ( allocSize > MAX_ALLOC_SIZE )
 	{
 		//최대치보다 크면 일반 해제
-		::free ( header );
+		::_aligned_free ( header );
+		return;
 	}
-	_poolTable [ allocSize ]->Push ( header );
 
+	_poolTable [ allocSize ]->Push ( header );
 }

@@ -1,9 +1,14 @@
 #pragma once
 
+enum
+{
+	SLIST_ALIGNMENT = 16
+};
+
 /*-------
  MemoryHeader
  *------*/
-struct MemoryHeader
+struct MemoryHeader : SLIST_ENTRY
 {
 	MemoryHeader ( int32 size ) : allocSize ( size ) {}
 
@@ -33,10 +38,8 @@ public:
 	MemoryHeader* Pop ( );
 
 private:
+	SLIST_HEADER _header;
 	int32 _allocSize = 0;
 	atomic<int32> _allocCount = 0;
-
-	USE_LOCK;
-	queue< MemoryHeader*> _queue;
 };
 
