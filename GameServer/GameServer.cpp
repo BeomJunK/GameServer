@@ -15,16 +15,7 @@
 
 int main()
 {
-	for ( int i = 0; i < 3; i++ )
-	{
-		GThreadManager->Launch ( [ ] ( )
-		{
-			
-		} );
-	}
-
-
-	GThreadManager->Join ( );
+	cout << "hello" << endl;
 }
 
 

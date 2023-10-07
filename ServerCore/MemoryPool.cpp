@@ -8,7 +8,7 @@ MemoryPool::MemoryPool ( int32 allocSize ) : _allocSize ( allocSize )
 
 MemoryPool::~MemoryPool ( )
 {
-	while ( MemoryHeader* memory = static_cast< MemoryHeader* >( ::InterlockedPopEntrySList ( &_header ) ); )
+	while ( MemoryHeader* memory = static_cast< MemoryHeader* >( ::InterlockedPopEntrySList ( &_header ) ) )
 		::_aligned_free ( memory );
 }
 
