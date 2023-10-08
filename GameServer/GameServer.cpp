@@ -1,21 +1,20 @@
 ﻿#include "pch.h"
 #include <iostream>
-#include "CorePch.h"
-#include <atomic>
-#include <mutex>
-#include <memory>
-#include <windows.h>
-#include <future>
-#include "ThreadManager.h"
-#include "CoreGlobal.h"
-#include "CoreTLS.h"
-#include "RefCounting.h"
-#include "Memory.h"
-#include "Allocator.h"
+
+
+class Knight
+{
+public:
+	Knight(){ cout << "KNight()" << endl;}
+	~Knight(){ cout << "~KNight()" << endl;}
+
+};
 
 int main()
 {
-	cout << "hello" << endl;
+	shared_ptr<Knight> k = ObjectPool<Knight>::MakeShared();
+
+
 }
 
 

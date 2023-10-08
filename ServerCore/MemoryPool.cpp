@@ -16,17 +16,18 @@ void MemoryPool::Push ( MemoryHeader* ptr )
 {
 	ptr->allocSize = 0;
 
-	//¸Þ¸ð¸® ¹Ý³²
+	//ï¿½Þ¸ï¿½ ï¿½Ý³ï¿½
 	::InterlockedPushEntrySList ( &_header , static_cast< PSLIST_ENTRY >( ptr ) );
 
-	_allocCount.fetch_sub ( 1 );
+	_useCount.fetch_sub ( 1 );
+	_reserveCount.fetch_add(1);
 }
 
 MemoryHeader* MemoryPool::Pop ( )
 {
 	MemoryHeader* memory = static_cast<MemoryHeader*>(::InterlockedPopEntrySList ( &_header ));
-		
-	//¾øÀ¸¸é »õ·Î¸¸µë
+
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¸ï¿½ï¿½ï¿½
 	if ( memory == nullptr )
 	{
 		memory = reinterpret_cast< MemoryHeader* >( ::_aligned_malloc( _allocSize, SLIST_ALIGNMENT ));
@@ -34,8 +35,9 @@ MemoryHeader* MemoryPool::Pop ( )
 	else
 	{
 		ASSERT_CRASH ( memory->allocSize == 0 );
+		_reserveCount.fetch_sub(1);
 	}
 
-	_allocCount.fetch_add ( 1 );
+	_useCount.fetch_add ( 1 );
 	return memory;
 }
