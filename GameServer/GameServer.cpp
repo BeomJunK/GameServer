@@ -18,6 +18,12 @@
 #include<WS2tcpip.h>
 #pragma comment(lib, "ws2_32.lib")
 
+void HandleError(const char* cause)
+{
+	//에러 몇번으로 실패했는지 받을 수 있다.
+	int32 errCode = ::WSAGetLastError();
+	cout << "Create Socket Failed Error : " << errCode << endl;
+}
 int main()
 {
 	//윈속 초기화 (ws2_32 라이브러리 초기화)
@@ -27,89 +33,69 @@ int main()
 	if (::WSAStartup(MAKEWORD(2 , 2) , &wsaData) != 0)
 		return 0;
 
-	//안내원의 핸드폰
-	//af : IPv4를 사용할건지 IPv6 를 사용할건지) / AF_INET = IPv4, AF_INET6 = IPv6
-	//type :  TCP(SOCK_STREAM) , UDP(SOCK_DGRAM) 선택
-	//protocol : 0으로 세팅
-	//return : descriptor 소켓 번호
-	SOCKET listenSocket = ::socket(AF_INET, SOCK_STREAM, 0);
-	if(listenSocket == INVALID_SOCKET)
+	SOCKET serverSocket = ::socket(AF_INET , SOCK_DGRAM , 0);
+	if (serverSocket == INVALID_SOCKET)
 	{
-		//에러 몇번으로 실패했는지 받을 수 있다.
-		int32 errCode = ::WSAGetLastError();
-		cout << "Create Socket Failed Error : " << errCode << endl;
+		HandleError("Socket");
 		return 0;
 	}
 
-	//나의 주소는 어디? (ip주소 + 포트)
-	SOCKADDR_IN serverAddr;
-	::memset(&serverAddr, 0, sizeof(serverAddr));
-	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY); //알아서 골라줘
-	serverAddr.sin_port = ::htons(7777);
 
-	//안내원의 폰 개통 (식당번호)
-	if(::bind(listenSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
-	{
-		//에러 몇번으로 실패했는지 받을 수 있다.
-		int32 errCode = ::WSAGetLastError();
-		cout << "bind Failed Error : " << errCode << endl;
-		return 0;
-	}
-	//영업 시작
-	//대기열 10개 넘으면 바로 끊음
-	if(::listen(listenSocket, 10) == SOCKET_ERROR)
-	{
-		//에러 몇번으로 실패했는지 받을 수 있다.
-		int32 errCode = ::WSAGetLastError();
-		cout << "Listen Error : " << errCode << endl;
-		return 0;
-	}
 
-	// -------영업중-------
-	while(true)
-	{
-		SOCKADDR_IN clientAddr; //Ipv4
-		::memset(&clientAddr , 0, sizeof(clientAddr));
+	//연결 상태 체크
+	bool enable = true;
+	::setsockopt(serverSocket , SOL_SOCKET , SO_KEEPALIVE , (char*)enable , sizeof(enable));
 
-		int32 addrLen = sizeof(clientAddr);
-		SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
-
-		//손님 입장!
-		char ipAddress[16];
-		//ulng ip 문자열로 바꾸기
-		::inet_ntop(AF_INET, &clientAddr.sin_addr, ipAddress, sizeof(ipAddress));
-
-		//TODO
-		cout << "클라입장 : " << ipAddress << endl;
-		while (true)
-		{
-			char recvBuffer [1024];
-			int32 recvLen = ::recv(clientSocket , recvBuffer , sizeof(recvBuffer) , 0);
-			if (recvLen <= 0)
-			{
-				int32 errCode = ::WSAGetLastError();
-				cout << "Recv Error : " << errCode << endl;
-				return 0;
-			}
-
-			cout << "데이터 받음 : " << recvBuffer << endl;
-
-			int32 resultCode = ::send(clientSocket , recvBuffer , sizeof(recvBuffer) , 0);
-			if (resultCode == SOCKET_ERROR)
-			{
-				int32 errCode = ::WSAGetLastError();
-				cout << "Send Error : " << errCode << endl;
-				return 0;
-			}
-			cout << "데이터 보냄" << endl;
-		}
-	}
-	// --------------
-	
+	//종료 할떄 송신버퍼 보내고 종료할것인가? 아니면 버릴것인가?
+	//0이면 closesocket이 바로 리턴 아니면 linger초만큼 대기 (default 0)
+	linger linger;
+	linger.l_onoff = 1; //on
+	linger.l_linger = 5; //5초간 대기
+	::setsockopt(serverSocket , SOL_SOCKET , SO_LINGER , (char*)&linger , sizeof(linger));
 	
 
-	
+	//정석적으로 끄는방법 closesocket전 매너있게 끊는법 shutdown
+	//Half-Close 
+	//SD_SEND : send 막는다
+	//SD_RECEIVE : recv 막는다
+	//SD_BOTH : 둘다 막는다
+	/*::shutdown(serverSocket , SD_BOTH);
+	::closesocket(serverSocket);*/
+
+
+	//SO_SNDBUF,SO_RCVBUF : 송수신 버퍼 크기 확인
+	int32 sendBufferSize;
+	int setSize = 85555;
+	int32 optionSize = sizeof(sendBufferSize);
+	//버퍼사이즈 설정가능
+	::setsockopt(serverSocket , SOL_SOCKET , SO_SNDBUF , (char*)&setSize , sizeof(setSize));
+	::getsockopt(serverSocket , SOL_SOCKET , SO_SNDBUF , (char*)&sendBufferSize , &optionSize);
+	cout << "send buff size : " << sendBufferSize << endl;
+
+	int32 recvBufferSize;
+	optionSize = sizeof(sendBufferSize);
+	::getsockopt(serverSocket , SOL_SOCKET , SO_RCVBUF , (char*)&recvBufferSize , &optionSize);
+	cout << "recv buff size : " << recvBufferSize << endl;
+
+	//SO_SENDBUF : IP주소 포트 재사용
+	//프로그램 종료후 바인딩된 ip port가 남아있다면 다시 서버를 뛰울수 없을 것이다.
+	//이런걸 예방하기위해 재사용하겠다고 말하는것이다.
+	{
+		bool enable = true;
+		::setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, (char*)&enable , sizeof(enable));
+	}
+
+	//IPPROTO_TCP
+	//네이글 알고리즘 작동여부
+	//데이터가 충분하면 보내고 아니면 충분히 쌓일때 까지 기다린다.
+	//장점 : 작은패킷이 불필요하게 많이 생성되는것 방지
+	//단점 : 반응 시간 손해
+	//게임에선 반응속도가 빨라야하기때문에 대부분에서 꺼준다.
+	{
+		bool enable = true;
+		::setsockopt(serverSocket , IPPROTO_TCP , TCP_NODELAY , (char*)&enable , sizeof(enable));
+	}
+
 	::WSACleanup();
 }
 
