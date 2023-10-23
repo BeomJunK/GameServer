@@ -40,6 +40,10 @@ using namespace std;
 #include "ThreadManager.h"
 #include "CoreTLS.h"
 
+//----------
+//	Socket
+//----------
+#include "SocketUtils.h"
 
 //----------
 //	Smart Pointer

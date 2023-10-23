@@ -16,12 +16,14 @@ public:
         GThreadManager = new ThreadManager();
         GMemory = new Memory();
         GDeadLockProfiler = new DeadLockProfiler();
+        SocketUtils::Init();
     }
     ~CoreGlobal()
     {
         delete GThreadManager;
         delete GMemory;
         delete GDeadLockProfiler;
+        SocketUtils::Clear();
     }
 } GCoreGlobal;
 
