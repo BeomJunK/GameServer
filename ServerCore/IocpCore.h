@@ -2,7 +2,7 @@
 /*-------------
 	IocpObject
  -------------*/
-class IocpObject
+class IocpObject : public enable_shared_from_this<IocpObject>
 {
 public:
 	virtual HANDLE GetHandle() abstract;
@@ -20,14 +20,11 @@ public:
 
 	HANDLE GetIocpHandle() { return _iocpHandle; }
 
-	bool Register(class IocpObject* iocpObject);
+	bool Register(IocpObjectRef iocpObject);
 	bool Dispatch(int32 timeOutMs = INFINITE);
 
 private:
 	HANDLE _iocpHandle;
 };
 
-
-//temp
-extern IocpCore GIocpCore;
 

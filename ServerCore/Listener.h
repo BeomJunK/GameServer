@@ -4,6 +4,7 @@
 #include "IocpEvent.h"
 
 class AcceptEvent;
+class ServerService;
 
 class Listener : public IocpObject
 {
@@ -11,7 +12,7 @@ public:
     Listener() = default;
     ~Listener();
 public:
-    bool StartAccept(NetAddress netAddress);
+    bool StartAccept(ServerServiceRef service);
     void CloseSocket();
 
     virtual HANDLE GetHandle() override;
@@ -23,4 +24,5 @@ private:
 protected:
     SOCKET _socket = INVALID_SOCKET;
     Vector<AcceptEvent*> _acceptEvent;
+    ServerServiceRef _service;
 };

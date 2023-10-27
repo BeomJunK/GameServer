@@ -61,46 +61,24 @@ int main()
 	//send
 	while (true)
 	{
-		
-
 		if (::send(clientSocket , sendBuffer , sizeof(sendBuffer) , 0) == SOCKET_ERROR)
 		{
 			//요청이 없는상황 원래는 블록이지만 논블로킹으로 만들었음
 			if (::WSAGetLastError() == WSAEWOULDBLOCK)
 				continue;
+			else if(::WSAGetLastError() == WSAECONNRESET)
+			{
+				cout << "호스트에 의해 강제로 끊김" << endl;
+				break;
+			}
 
-			//error
 			break;
 		}
 
 		cout << "Send data Len :" << sizeof(sendBuffer) << endl;
-
-		while (true)
-		{
-			char recvBuffer [100];
-			int32 recvLen = ::recv(clientSocket , recvBuffer , sizeof(recvBuffer) , 0);
-			if (recvLen == SOCKET_ERROR)
-			{
-				//요청이 없는상황 원래는 블록이지만 논블로킹으로 만들었음
-				if (::WSAGetLastError() == WSAEWOULDBLOCK)
-					continue;
-
-				//error
-				break;
-			}
-			else if (recvLen == 0)
-			{
-				//연결 끊김
-				break;
-			}
-
-			cout << "Recv Data Len : " << recvLen << endl;
-			break;
-		}
 		this_thread::sleep_for(1s);
 	}
-
-	
-
 	::WSACleanup();
+
+	system("pause");
 }

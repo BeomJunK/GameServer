@@ -19,9 +19,13 @@ public:
     IocpEvent(EventType type);
 
     void Init();
-    EventType GetType() { return _type;}
-protected:
-    EventType _type;
+public:
+    EventType eventType;
+
+    //IocpObject를
+    //event를 주고받는 와중에 삭제 할수도 있으니
+    //레퍼런스 카운팅해 사라지지 않도록 한다.
+    IocpObjectRef owner;
 };
 
 
@@ -42,10 +46,9 @@ class AcceptEvent : public IocpEvent
 public:
     AcceptEvent() : IocpEvent(EventType::Accept) { }
 
-    void SetSession(Session* session) { _session = session; }
-    Session* GetSession() { return _session; }
-private:
-    Session* _session = nullptr;
+   
+public:
+    SessionRef session = nullptr;
     
 };
 /*----------------
