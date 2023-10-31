@@ -68,6 +68,7 @@ HANDLE Listener::GetHandle()
 
 void Listener::Dispatch(IocpEvent* iocpEvent, DWORD numOfBytes)
 {
+    // 일거리 없는 스레드가 일감 받아옴
     ASSERT_CRASH(iocpEvent->eventType == EventType::Accept);
     AcceptEvent* acceptEvent = static_cast<AcceptEvent*>(iocpEvent);
     ProcessAccept(acceptEvent);
@@ -75,18 +76,22 @@ void Listener::Dispatch(IocpEvent* iocpEvent, DWORD numOfBytes)
 
 void Listener::RegisterAccept(AcceptEvent* acceptEvent)
 {
-    SessionRef session =  _service->CreateSession(); // 세션 생성후 Iocp 등록
+    SessionRef session =  _service->CreateSession(); // 세션 생성후, 여기서 Iocp에 등록!!!! 
 
     acceptEvent->Init();
     acceptEvent->session = session;
 
 
     DWORD bytesReceived = 0;
-    if (false == SocketUtils::AcceptEx(_socket, session->GetSocket(), session->_recvBuffer, 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, OUT & bytesReceived, static_cast<LPOVERLAPPED>(acceptEvent)))
+
+    //Iocp에일감 던지기 나중에
+    //일거리 없는 스레드가 와서 일감을 가져갈것임
+    if (false == SocketUtils::AcceptEx(_socket, session->GetSocket(), session->_recvBuffer.WritePos(), 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, OUT & bytesReceived, static_cast<LPOVERLAPPED>(acceptEvent)))
     {
-        //acceptEx false가 떠서 여기로 온다면 오류를 보고 판단.
+        //일감 던졌는데 아직실행이 되지않았네?
+        //다시 RegisterAccept걸어주기 (iocp에 일감 다시던지기)
         const int32 errCode = ::WSAGetLastError();
-        if(errCode != WSA_IO_PENDING) //아직 실행이 되지않고 보류중이다.
+        if(errCode != WSA_IO_PENDING) 
         {
             //다시 accept상태로 만들어야 accept가 가능하다 (낚시대 던지기)
             RegisterAccept(acceptEvent);
@@ -100,6 +105,9 @@ void Listener::RegisterAccept(AcceptEvent* acceptEvent)
 
 void Listener::ProcessAccept(AcceptEvent* acceptEvent)
 {
+    IocpEvent* iocpEvent = static_cast<IocpEvent*>(acceptEvent);
+    ASSERT_CRASH(iocpEvent->eventType == EventType::Accept);
+
     SessionRef session = acceptEvent->session;
 
     if (false == SocketUtils::SetUpdateAcceptSocket(session->GetSocket(), _socket))
@@ -108,6 +116,7 @@ void Listener::ProcessAccept(AcceptEvent* acceptEvent)
         return;
     }
 
+    //SOCKADDR_IN 가져오기
     SOCKADDR_IN sockAddress;
     int32 sizeofSockAddr = sizeof(sockAddress);
     if(SOCKET_ERROR == ::getpeername(session->GetSocket(), OUT reinterpret_cast<SOCKADDR*>(&sockAddress), &sizeofSockAddr))
@@ -116,10 +125,12 @@ void Listener::ProcessAccept(AcceptEvent* acceptEvent)
         return;
     }
 
+    //Address 세팅
     session->SetNetAddress(NetAddress(sockAddress));
-
-    wstring ip = session->GetAddress().GetIPAddress();
-    wcout << L"connect client : " <<  ip << endl;
+    session->ProcessConnect();
+   
     
     RegisterAccept(acceptEvent);
+
+    
 }

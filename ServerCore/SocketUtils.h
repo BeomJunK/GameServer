@@ -10,7 +10,7 @@ public:
     //connect, disconnect, accept를 비동기로 호풀하기 위한
     //함수 포인터 - 런타임중에 가져와야 한다.
     static LPFN_CONNECTEX           ConnectEx;
-    static LPFN_DISCONNECTEX        DisConnectEx;
+    static LPFN_DISCONNECTEX        DisconnectEx;
     static LPFN_ACCEPTEX            AcceptEx;
 
 public:

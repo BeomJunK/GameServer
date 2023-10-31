@@ -3,6 +3,7 @@
 enum class EventType : uint8
 {
     Connect,
+    DisconnectEvent,
     Accept,
     Recv,
     Send
@@ -39,6 +40,15 @@ public:
 };
 
 /*----------------
+    DisconnectEvent
+-----------------*/
+class DisconnectEvent : public IocpEvent
+{
+public:
+    DisconnectEvent() : IocpEvent(EventType::DisconnectEvent) { }
+};
+
+/*----------------
     AcceptEvent
 -----------------*/
 class AcceptEvent : public IocpEvent
@@ -66,4 +76,6 @@ class SendEvent : public IocpEvent
 {
 public:
     SendEvent() : IocpEvent(EventType::Send) { }
+
+    vector<BYTE> buffer;
 };

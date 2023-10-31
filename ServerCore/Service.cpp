@@ -32,7 +32,8 @@ void Service::CloseService()
 SessionRef Service::CreateSession()
 {
       SessionRef session = _sessionFactory();
-
+      session->SetService(shared_from_this());
+      
       if(_iocpCore->Register(session) == false)
             return nullptr;
 
@@ -65,8 +66,22 @@ ClientService::ClientService(NetAddress targetAddress, IocpCoreRef core, Session
 
 bool ClientService::Start()
 {
-      //TODO
-      return Service::Start();
+    if (CanStart() == false)
+        return false;
+
+    const int32 sessionCount = GetMaxSessionCount();
+   
+    //서버 부하테스트
+    //스트레스 테스트 할때를 위해 여러개 만들어 연결시킨다.
+    for (int i = 0; i < sessionCount; i++)
+    {
+        SessionRef session = CreateSession();
+        if (session->Connect() == false)
+            return false;
+    }
+
+
+    return true;
 }
 /*----------------------
       Server Service
