@@ -24,8 +24,8 @@ using namespace std;
 //----------
 //	Memory
 //----------
-#include "Allocator.h"
 #include "Memory.h"
+#include "Allocator.h"
 #include "Container.h"
 #include "ObjectPool.h"
 
@@ -50,6 +50,10 @@ using namespace std;
 //----------
 #include "RefCounting.h"
 
-
+//----------
+//	Buffer
+//----------
+#include "RecvBuffer.h"
+#include "SendBuffer.h"
 
 

@@ -134,19 +134,7 @@ void Session::ProcessRecv(DWORD numOfBytes)
     RegisterRecv();
 }
 
-void Session::ProcessSend(SendEvent* sendEvent, DWORD numOfBytes)
-{
-    sendEvent->owner = nullptr;
-    xdelete(sendEvent);
 
-    if(numOfBytes == 0)
-    {
-        Disconnect(L"Send 0");
-    }
-	
-    //콘텐츠에서 구현
-    OnSend(numOfBytes);
-}
 
 void Session::HandleError(int32 errorCode)
 {
@@ -187,44 +175,95 @@ void Session::ProcessDisConnect()
 {
     _disconnectEvent.owner = nullptr;// RELEASE_REF
 }
-void Session::Send(BYTE* buffer, int32 len)
-{
-    SendEvent* sendEvent = xnew<SendEvent>();
-    sendEvent->owner = shared_from_this();
-    sendEvent->buffer.resize(len);
-    ::memcpy(sendEvent->buffer.data(), buffer, len);
 
+
+void Session::Send(SendBufferRef sendBuffer)
+{
     WRITE_LOCK
-    RegisterSend(sendEvent);
-}
-void Session::RegisterSend(SendEvent* sendEvent)
-{
-    //생각해봐야할 문제
-    //연속적으로 보내개 된다면 가능한가?
-    //WSASend는 멀티 스레드 환경에서 Safe하지 않다.
-    //어떤식으로건 순서를 보장 해줘야한다
-    //보내더라도 순서가 섞여버릴수있음
-    //버퍼가 꽉 찼다면 굳이 데이터를 밀어넣을 필요가 없다.
 
-	
+    //만약 누군가 보내고있따면 queue에 쌓아만 둔다.
+    _sendQueue.push(sendBuffer);
+
+    if(_sendRegistered.exchange(true) == false)
+        RegisterSend();
+}
+
+void Session::RegisterSend()
+{
     if(IsConnected() == false)
         return;
 
-    WSABUF wsaBuf;
-    wsaBuf.buf = (char*)sendEvent->buffer.data();
-    wsaBuf.len = (ULONG)sendEvent->buffer.size();
+    _sendEvent.Init();
+    _sendEvent.owner = shared_from_this();
 
+    //큐에 쌓인 버퍼 sendEvent에 등록
+    //여기서 여러 쓰레드에 의해 이벤트애 버퍼 등록됨
+    {
+        WRITE_LOCK
+
+        int32 writeSize = 0;//쌓인 SendBuffer의 총 크기 SendBuffer * n
+        while (_sendQueue.empty() == false)
+        {
+            SendBufferRef sendBuffer = _sendQueue.front();
+
+            //너무 많은데이터 보내는것을 방지하기위해
+            //보낸 데이터 기록
+            writeSize += sendBuffer->WriteSize();
+            //TODO : if 많이보냈다면 예외처리 
+            
+            _sendQueue.pop();
+            _sendEvent.buffer.push_back(sendBuffer);
+        }
+    }
+
+    //Scatter - Gather 흩어져있는데이터를 한번에 보내는 기법
+    Vector<WSABUF> wsaBufs;
+    wsaBufs.reserve(_sendEvent.buffer.size());
+
+    //이벤트안에 여러 버퍼들이 들어있을것이다.
+    for(SendBufferRef sendBuffer : _sendEvent.buffer)
+    {
+        //WSABUF를  이벤트안에 버퍼만큼 만들어줘서 벡터에 저장해논다
+        WSABUF wsaBuf;
+        wsaBuf.buf = (char*)sendBuffer->Buffer();
+        wsaBuf.len = (ULONG)sendBuffer->WriteSize();
+        wsaBufs.push_back(wsaBuf);
+    }
+   
     DWORD numOfBytes = 0;
-    if(SOCKET_ERROR == ::WSASend(_socket, &wsaBuf, 1, OUT &numOfBytes, 0, sendEvent, nullptr ))
+    if(SOCKET_ERROR == ::WSASend(_socket, wsaBufs.data(), static_cast<DWORD>(wsaBufs.size()), OUT &numOfBytes, 0, &_sendEvent, nullptr ))
     {
         int32 errCode = ::WSAGetLastError();
         if(errCode != WSA_IO_PENDING)
         {
             HandleError(errCode);
-            sendEvent->owner = nullptr;
-            xdelete(sendEvent);
+            _sendEvent.owner = nullptr;
+            _sendEvent.buffer.clear();
+            _sendRegistered.store(false);
         }
     }
+}
+void Session::ProcessSend(DWORD numOfBytes)
+{
+    // RELEASE_REF : ProcessSend가 실행되는 시점엔 이벤트의버퍼는 모두 처리가 됐다. clear로 비워주기
+    _sendEvent.buffer.clear(); 
+    _sendEvent.owner = nullptr;// RELEASE_REF
+   
+    
+    if(numOfBytes == 0)
+    {
+        Disconnect(L"Send 0");
+    }
+	
+    //콘텐츠에서 구현
+    OnSend(numOfBytes);
+
+    WRITE_LOCK
+    if(_sendQueue.empty())
+        _sendRegistered.store(false);
+    else
+        RegisterSend();
+    
 }
 bool Session::Connect()
 {
@@ -244,7 +283,7 @@ void Session::Dispatch(IocpEvent* iocpEvent, DWORD numOfByte)
         ProcessRecv(numOfByte);
         break;
     case EventType::Send:
-        ProcessSend(static_cast<SendEvent*>(iocpEvent), numOfByte);
+        ProcessSend(numOfByte);
         break;
     default:
         break;

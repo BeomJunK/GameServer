@@ -11,7 +11,7 @@ void HandleError(const char* cause)
 	cout << cause << errCode << endl;
 }
 
-char sendBuffer[] = "Hello World";
+char sendData[] = "Hello World";
 class ServerSession : public Session
 {
 public:
@@ -26,7 +26,10 @@ public:
 	void OnConnected() override
 	{
 		cout << "서버접속!" << endl;
-		Send((BYTE*)sendBuffer, sizeof(sendBuffer));
+		
+		SendBufferRef sendBuffer = MakeShared<SendBuffer>(4096);
+		sendBuffer->CopyData(sendData, sizeof(sendData));
+		Send(sendBuffer);
 	}
 	void OnSend(DWORD len) override
 	{
@@ -38,8 +41,11 @@ public:
 		if (len == 0)
 			return 0;
 		cout << "데이터 받음" << len << endl;
-		//this_thread::sleep_for(1s);
-		Send((BYTE*)sendBuffer, sizeof(sendBuffer));
+		this_thread::sleep_for(1s);
+		SendBufferRef sendBuffer = MakeShared<SendBuffer>(4096);
+		sendBuffer->CopyData(sendData, sizeof(sendData));
+		Send(sendBuffer);
+		
 		return len;
 	}
 };
@@ -50,19 +56,18 @@ int main()
 	NetAddress(L"127.0.0.1", 7777),
 	MakeShared<IocpCore>(),
 	MakeShared<ServerSession>,
-	1
+	5
 	);
 
 	ASSERT_CRASH(service->Start());
 	
-	for(int32 i = 0;i<2;i++)
+	for(int32 i = 0;i<5;i++)
 	{
 		GThreadManager->Launch([=]()
 		{
 			while(true)
 			{
 				service->GetIocpCore()->Dispatch();
-				cout << "Dispatch" << endl;
 			}
 		});
 	}

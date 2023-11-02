@@ -29,9 +29,11 @@ public:
 	void SetService(ServiceRef service){ _service = service;}
 public:
 	/* 외부 사용 */
-	void Disconnect(const WCHAR* cause);
-	void Send(BYTE* buffer, int32 len);
+	void Send(SendBufferRef sendBuffer);
+	
 	bool Connect();
+	void Disconnect(const WCHAR* cause);
+	
 public:
 	/* 정보 관련 */
 	void SetNetAddress(NetAddress address) { _netAddress = address; }
@@ -44,12 +46,12 @@ private:
 	bool RegisterConnect();
 	bool RegisterDisConnect();
 	void RegisterRecv();
-	void RegisterSend(SendEvent* sendEvent);
+	void RegisterSend();
 
 	void ProcessConnect();
 	void ProcessDisConnect();
 	void ProcessRecv(DWORD numOfBytes);
-	void ProcessSend(SendEvent* sendEvent, DWORD numOfBytes);
+	void ProcessSend(DWORD numOfBytes);
 
 	void HandleError(int32 errorCode);
 
@@ -76,9 +78,12 @@ private:
 	RecvBuffer _recvBuffer;
 
 	/* 송신 관련 */
+	Queue<SendBufferRef> _sendQueue;
+	Atomic<bool> _sendRegistered = false;
 private:
 	/* iocpevent 재사용위해 */
 	DisconnectEvent _disconnectEvent;
 	ConnectEvent _connectEvent;
 	RecvEvent _recvEvent;
+	SendEvent _sendEvent;
 };
