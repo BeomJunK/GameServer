@@ -35,6 +35,8 @@ public:
 	
 	int32 OnRecv(BYTE* buffer, int32 len) override
 	{
+		if (len == 0)
+			return 0;
 		cout << "데이터 받음" << len << endl;
 		//this_thread::sleep_for(1s);
 		Send((BYTE*)sendBuffer, sizeof(sendBuffer));
@@ -60,6 +62,7 @@ int main()
 			while(true)
 			{
 				service->GetIocpCore()->Dispatch();
+				cout << "Dispatch" << endl;
 			}
 		});
 	}

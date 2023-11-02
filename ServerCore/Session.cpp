@@ -87,6 +87,7 @@ void Session::RegisterRecv()
 
 void Session::ProcessConnect()
 {
+    _connectEvent.owner = nullptr;
     _connected.store(true);
 
     //세션 등록
@@ -174,7 +175,7 @@ bool Session::RegisterDisConnect()
     if(false == SocketUtils::DisconnectEx(_socket, &_disconnectEvent, TF_REUSE_SOCKET, 0))
     {
         int32 errCode = ::WSAGetLastError();
-        if(errCode == WSA_IO_PENDING)
+        if(errCode != WSA_IO_PENDING)
         {
             _disconnectEvent.owner = nullptr;// RELEASE_REF
             return false;
