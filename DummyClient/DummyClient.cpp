@@ -4,13 +4,6 @@
 #include "Service.h"
 
 
-void HandleError(const char* cause)
-{
-	//에러 몇번으로 실패했는지 받을 수 있다.
-	int32 errCode = ::WSAGetLastError();
-	cout << cause << errCode << endl;
-}
-
 char sendData[] = "Hello World";
 class ServerSession : public Session
 {
@@ -27,8 +20,10 @@ public:
 	{
 		cout << "서버접속!" << endl;
 		
-		SendBufferRef sendBuffer = MakeShared<SendBuffer>(4096);
-		sendBuffer->CopyData(sendData, sizeof(sendData));
+		SendBufferRef sendBuffer = GSendBufferManager->Open(4096);
+		::memcpy(sendBuffer->Buffer(), sendData, sizeof(sendData));
+		sendBuffer->Close(sizeof(sendData));
+		
 		Send(sendBuffer);
 	}
 	void OnSend(DWORD len) override
@@ -41,9 +36,11 @@ public:
 		if (len == 0)
 			return 0;
 		cout << "데이터 받음" << len << endl;
+		SendBufferRef sendBuffer = GSendBufferManager->Open(4096);
+		::memcpy(sendBuffer->Buffer(), sendData, sizeof(sendData));
+		sendBuffer->Close(sizeof(sendData));
+		
 		this_thread::sleep_for(1s);
-		SendBufferRef sendBuffer = MakeShared<SendBuffer>(4096);
-		sendBuffer->CopyData(sendData, sizeof(sendData));
 		Send(sendBuffer);
 		
 		return len;
@@ -51,17 +48,17 @@ public:
 };
 int main()
 {
-	this_thread::sleep_for(2s);
+	this_thread::sleep_for(1s);
 	ClientServiceRef service = MakeShared<ClientService>(
 	NetAddress(L"127.0.0.1", 7777),
 	MakeShared<IocpCore>(),
 	MakeShared<ServerSession>,
-	5
+	1
 	);
 
 	ASSERT_CRASH(service->Start());
 	
-	for(int32 i = 0;i<5;i++)
+	for(int32 i = 0;i<2;i++)
 	{
 		GThreadManager->Launch([=]()
 		{

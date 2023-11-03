@@ -4,15 +4,12 @@ using GameSessionRef = shared_ptr<GameSession>;
 class GameSessionManager
 {
 public:
-    GameSessionManager();
-public:
     void Add(GameSessionRef session);
     void Remove(GameSessionRef session);
     void Broadcast(SendBufferRef sendBuffer);
     
 private:
     USE_LOCK
-    Set<GameSessionRef> _sessions;
+    set<GameSessionRef> _sessions;
 };
-
 extern GameSessionManager GSessionManager;

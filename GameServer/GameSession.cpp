@@ -2,7 +2,7 @@
 #include "GameSession.h"
 #include "GameSessionManager.h"
 
-void GameSession::OnConnected() 
+void GameSession::OnConnected()
 {
     cout << "클라 접속" << endl;
     GSessionManager.Add(static_pointer_cast<GameSession>(shared_from_this()));
@@ -12,12 +12,11 @@ int32 GameSession::OnRecv(BYTE* buffer, int32 len)
 {
     cout << "데이터 받음 : " << len << endl;
 
-    SendBufferRef sendBuffer = MakeShared<SendBuffer>(4096);
-    sendBuffer->CopyData(buffer, len);
+    SendBufferRef sendBuffer = GSendBufferManager->Open(4096);
+    ::memcpy(sendBuffer->Buffer(), buffer, len);
+    sendBuffer->Close(len);
 
-    for(int i = 0; i<5;i++)
-        GSessionManager.Broadcast(sendBuffer);
-		
+    GSessionManager.Broadcast(sendBuffer);
     return len;
 }
 void GameSession::OnSend(DWORD len)

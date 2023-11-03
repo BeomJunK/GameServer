@@ -1,8 +1,4 @@
 #include "pch.h"
-#include "ThreadManager.h"
-#include "CoreTLS.h"
-#include "CoreGlobal.h"
-
 /*------------------
 	ThreadManager
 -------------------*/

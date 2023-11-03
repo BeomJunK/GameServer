@@ -3,11 +3,6 @@
 #include "GameSession.h"
 
 GameSessionManager GSessionManager;
-
-GameSessionManager::GameSessionManager()
-{
-}
-
 void GameSessionManager::Add(GameSessionRef session)
 {
     WRITE_LOCK
@@ -17,7 +12,7 @@ void GameSessionManager::Add(GameSessionRef session)
 void GameSessionManager::Remove(GameSessionRef session)
 {
     WRITE_LOCK
-    _sessions.erase(session);
+   _sessions.erase(session);
 }
 
 void GameSessionManager::Broadcast(SendBufferRef sendBuffer)

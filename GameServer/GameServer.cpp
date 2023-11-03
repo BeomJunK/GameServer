@@ -1,7 +1,8 @@
 ﻿#include "pch.h"
+#include "CoreGlobal.h"
+
 #include "Service.h"
 #include "GameSession.h"
-#include "GameSessionManager.h"
 
 int main()
 {

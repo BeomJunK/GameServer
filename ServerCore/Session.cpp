@@ -179,12 +179,21 @@ void Session::ProcessDisConnect()
 
 void Session::Send(SendBufferRef sendBuffer)
 {
-    WRITE_LOCK
+    if(IsConnected() == false)
+        return;
 
-    //만약 누군가 보내고있따면 queue에 쌓아만 둔다.
-    _sendQueue.push(sendBuffer);
+    bool registerSend = false;
+    
+    {
+        WRITE_LOCK
+        //만약 누군가 보내고있따면 queue에 쌓아만 둔다.
+        _sendQueue.push(sendBuffer);
+        if (_sendRegistered.exchange(true) == false)
+            registerSend = true;
+    }
 
-    if(_sendRegistered.exchange(true) == false)
+
+    if (registerSend)
         RegisterSend();
 }
 

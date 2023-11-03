@@ -5,7 +5,7 @@
 -------------*/
 RecvBuffer::RecvBuffer(int32 bufferSize)
 {
-  //¹öÆÛ¸¦ ÇÑ¹ø¿¡ ¸ø¹ÞÀ¸¸é º¹»ç ºñ¿ëÀÌ ¹ß»ýÇÏ´Ï Ã³À½ºÎÅÍ Å©°Ô Àâ¾ÆÁØ´Ù.
+  //ï¿½ï¿½ï¿½Û¸ï¿½ ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ï´ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
     _bufferSize = bufferSize;
   _capacity = _bufferSize * BUFFER_COUNT;
   _buffer.resize(_capacity);
@@ -20,13 +20,13 @@ void RecvBuffer::Clean()
   int32 dataSize = DataSize();
   if(dataSize == 0)
   {
-    //´Ù ÀÐ¾ú´Ù.
+    //ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½.
     _readPos = 0;
     _writePos = 0;
   }
   else
   {
-    //¿©À¯°ø°£ ¾øÀ»¶§ µ¥ÀÌÅÍ Ã³À½À¸·Î ¹Ð±â
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½
     if(FreeSize() < _bufferSize)
     {
       ::memcpy(&_buffer[0], &_buffer[_readPos], dataSize);
