@@ -87,3 +87,26 @@ private:
 	RecvEvent _recvEvent;
 	SendEvent _sendEvent;
 };
+
+//패킷이 다오지 않을수 있는데 어떻게 판단할것인가 ?
+//헤더를 붙여서 판단한다. 최소 4바이트는 받게하고 앞에 헤더를 어떤정보가있는지 파싱해본다.
+/*------------------
+	PacketSession  
+-------------------*/
+struct PacketHeader
+{
+	uint16 size;
+	uint16 id; //프로토콜 ID
+};
+
+class PacketSession : public Session
+{
+public:
+	PacketSession();
+	virtual ~PacketSession();
+
+	PacketSessionRef GetPacketSessionRef() {return static_pointer_cast<PacketSession>(shared_from_this());};
+
+	virtual int32 OnRecv(BYTE* buffer, int32 len) sealed; //sealed : 상속받은애는 이걸 사용못하게 막음
+	virtual int32 OnRecvPacket(BYTE* buffer, int32 len) abstract;
+};

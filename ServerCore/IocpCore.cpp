@@ -51,6 +51,8 @@ bool IocpCore::Dispatch(int32 timeOutMs)
 			break;
 		}
 	}
+
+	return true;
 }
 
 
