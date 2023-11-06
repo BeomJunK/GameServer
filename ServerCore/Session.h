@@ -102,8 +102,8 @@ struct PacketHeader
 class PacketSession : public Session
 {
 public:
-	PacketSession();
-	virtual ~PacketSession();
+	PacketSession(){}
+	virtual ~PacketSession(){}
 
 	PacketSessionRef GetPacketSessionRef() {return static_pointer_cast<PacketSession>(shared_from_this());};
 

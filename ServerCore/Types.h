@@ -31,4 +31,4 @@ using SendBufferRef = std::shared_ptr<class SendBuffer>;
 using SendBufferChunkRef = std::shared_ptr<class SendBufferChunk>;
 using PacketSessionRef = std::shared_ptr<class PacketSession>;
 
-//#define _STOMP
+#define _STOMP

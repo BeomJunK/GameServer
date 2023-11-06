@@ -20,8 +20,7 @@ void Session::Disconnect(const WCHAR* cause)
 
     wcout << "Discconect : " << cause << endl;
 
-    OnDisconnected();
-    GetService()->ReleaseSession(GetSessionRef());
+   
 
     RegisterDisConnect();
 }
@@ -173,6 +172,9 @@ bool Session::RegisterDisConnect()
 }
 void Session::ProcessDisConnect()
 {
+    OnDisconnected();
+    GetService()->ReleaseSession(GetSessionRef());
+
     _disconnectEvent.owner = nullptr;// RELEASE_REF
 }
 
@@ -301,13 +303,9 @@ void Session::Dispatch(IocpEvent* iocpEvent, DWORD numOfByte)
 /*------------------
     PacketSession  
 -------------------*/
-PacketSession::PacketSession()
-{
-}
 
-PacketSession::~PacketSession()
-{
-}
+
+
 
 int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 {

@@ -24,4 +24,5 @@ void GameSession::OnSend(DWORD len)
 void GameSession::OnDisconnected()
 {
     cout << "클라 끊음" << endl;
+    GSessionManager.Remove(static_pointer_cast<GameSession>(shared_from_this()));
 }
