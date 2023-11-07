@@ -15,16 +15,17 @@ class SendBufferChunk;
 class SendBuffer : public enable_shared_from_this<SendBuffer>
 {
 public:
-    SendBuffer(SendBufferChunkRef owner, BYTE* buffer, int32 allocSize);
+    SendBuffer(SendBufferChunkRef owner, BYTE* buffer, uint32 allocSize);
     ~SendBuffer();
 
     BYTE* Buffer(){return _buffer; }
     int32 WriteSize() { return _writeSize; }
     void Close(uint32 writeSize);
+    uint32 GetAllocSize() { return _allocSize; }
 private:
     BYTE* _buffer;
     uint32 _allocSize = 0;
-    int32 _writeSize = 0;
+    uint32 _writeSize = 0;
     SendBufferChunkRef _owner; //ref카운팅이 되기때문에 절대 사라지지않을것이다.
 };
 

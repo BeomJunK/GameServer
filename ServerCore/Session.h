@@ -108,5 +108,5 @@ public:
 	PacketSessionRef GetPacketSessionRef() {return static_pointer_cast<PacketSession>(shared_from_this());};
 
 	virtual int32 OnRecv(BYTE* buffer, int32 len) sealed; //sealed : 상속받은애는 이걸 사용못하게 막음
-	virtual int32 OnRecvPacket(BYTE* buffer, int32 len) abstract;
+	virtual void OnRecvPacket(BYTE* buffer, int32 len) abstract;
 };

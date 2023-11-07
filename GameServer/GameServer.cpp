@@ -1,7 +1,10 @@
 ﻿#include "pch.h"
+
+#include "BufferWriter.h"
 #include "Service.h"
 #include "GameSession.h"
 #include "GameSessionManager.h"
+#include "ServerPacketHandleler.h"
 
 int main()
 {
@@ -30,13 +33,9 @@ int main()
 	char sendData[] = "Hello World!";
 	while(true)
 	{
-		SendBufferRef sendBuffer = GSendBufferManager->Open(4096);
-
-		BYTE* buffer = sendBuffer->Buffer();
-		((PacketHeader*)buffer)->size = (sizeof(sendData) + sizeof(PacketHeader));
-		((PacketHeader*)buffer)->id = 1;
-		::memcpy(&buffer[4], sendData, sizeof(sendData));
-		sendBuffer->Close(sizeof(sendData)+ sizeof(PacketHeader));
+		Vector<BuffData> buffs{ BuffData{100, 1.5f},BuffData{200, 2.5f},BuffData{300, 3.5f}};
+		
+		SendBufferRef sendBuffer = ServerPacketHandleler::Make_SC_TEST(1001, 100, 10, buffs);
 		this_thread::sleep_for(250ms);
 		GSessionManager.Broadcast(sendBuffer);
 	}

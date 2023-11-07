@@ -56,4 +56,9 @@ using namespace std;
 #include "RecvBuffer.h"
 #include "SendBuffer.h"
 
+//----------
+//	Session
+//----------
+#include "Session.h"
+
 

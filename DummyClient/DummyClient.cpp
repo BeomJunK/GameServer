@@ -1,5 +1,8 @@
 ﻿#include "pch.h"
 #include <iostream>
+
+#include "BufferReader.h"
+#include "ClientPacketHandleler.h"
 #include "Session.h"
 #include "Service.h"
 
@@ -21,15 +24,9 @@ public:
 		cout << "데이터  보냄" << len << endl;
 	}
 	
-	int32 OnRecvPacket(BYTE* buffer, int32 len) override
+	void OnRecvPacket(BYTE* buffer, int32 len) override
 	{
-		PacketHeader header = *((PacketHeader*)&buffer[0]);
-		cout << "Pakcet ID : " << header.id << "Size : " << header.size << endl;
-
-		char recvBuffer[4096];
-		::memcpy(recvBuffer, &buffer[4], header.size - sizeof(PacketHeader));
-		cout << recvBuffer << endl;
-		return len;
+		ClientPacketHandleler::HandlePacket(buffer, len);
 	}
 };
 int main()
@@ -41,7 +38,7 @@ int main()
 	NetAddress(L"127.0.0.1", 7777),
 	MakeShared<IocpCore>(),
 	MakeShared<ServerSession>,
-	5
+	1
 	);
 
 	ASSERT_CRASH(service->Start());
