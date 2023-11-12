@@ -2,7 +2,9 @@
 #include "Service.h"
 #include "GameSession.h"
 #include "GameSessionManager.h"
+#include "Protocol.pb.h"
 #include "ServerPacketHandleler.h"
+
 
 int main()
 {
@@ -29,37 +31,27 @@ int main()
 
 	while(true)
 	{
-		PKT_S_TEST_WRITE pkWriter(1001, 100, 10);
-
-		PKT_S_TEST_WRITE::BuffsList buffList = pkWriter.ReserveBuffsList(3);
-		buffList[0] = {100, 1.5f};
-		buffList[1] = {200, 2.5f};
-		buffList[2] = {300, 3.5f};
-
-		PKT_S_TEST_WRITE::BuffsVictimsList vic0 = pkWriter.ReserveBuffsVitimsList(&buffList[0], 3);
+		Protocol::S_TEST pkt;
+		pkt.set_id(1000);
+		pkt.set_hp(100);
+		pkt.set_attack(10);
 		{
-			 vic0[0] = 111;
-			 vic0[1] = 111;
-			 vic0[2] = 111;
+			auto buf = pkt.add_buffs();
+			buf->set_buffid(100);
+			buf->set_remaintime(19);
+			buf->add_victims(4000);
 		}
-
-		PKT_S_TEST_WRITE::BuffsVictimsList vic1 = pkWriter.ReserveBuffsVitimsList(&buffList[1], 3);
 		{
-			vic1[0] = 222;
-			vic1[1] = 222;
-			vic1[2] = 222;
+			auto buf = pkt.add_buffs();
+			buf->set_buffid(200);
+			buf->set_remaintime(11);
+			buf->add_victims(3000);
 		}
-
-		PKT_S_TEST_WRITE::BuffsVictimsList vic2 = pkWriter.ReserveBuffsVitimsList(&buffList[2], 3);
-		{
-			vic2[0] = 333;
-			vic2[1] = 333;
-			vic2[2] = 333;
-		}
-		SendBufferRef sendBuffer = pkWriter.CloseAndReturn();
+		SendBufferRef sendBuffer = ServerPacketHandleler::MakeSendBffer(pkt);
+		GSessionManager.Broadcast(sendBuffer);
 		
 		this_thread::sleep_for(550ms);
-		GSessionManager.Broadcast(sendBuffer);
+
 	}
 
 	GThreadManager->Join();
