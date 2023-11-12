@@ -1,11 +1,8 @@
 ﻿#include "pch.h"
 #include <iostream>
-
-#include "BufferReader.h"
 #include "ClientPacketHandleler.h"
 #include "Session.h"
 #include "Service.h"
-
 
 class ServerSession : public PacketSession
 {
@@ -31,8 +28,6 @@ public:
 };
 int main()
 {
-	SetConsoleOutputCP(65001);
-
 	this_thread::sleep_for(1s);
 	ClientServiceRef service = MakeShared<ClientService>(
 	NetAddress(L"127.0.0.1", 7777),
