@@ -3,11 +3,12 @@
 #include "GameSession.h"
 #include "GameSessionManager.h"
 #include "Protocol.pb.h"
-#include "ServerPacketHandleler.h"
+#include "ClientPacketHandler.h"
 
 
 int main()
 {
+	ClientPacketHandler::Init();
 	ServerServiceRef service = MakeShared<ServerService>(
 	NetAddress(L"127.0.0.1", 7777),
 	MakeShared<IocpCore>(),
@@ -47,7 +48,7 @@ int main()
 			buf->set_remaintime(11);
 			buf->add_victims(3000);
 		}
-		SendBufferRef sendBuffer = ServerPacketHandleler::MakeSendBffer(pkt);
+		SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBffer(pkt);
 		GSessionManager.Broadcast(sendBuffer);
 		
 		this_thread::sleep_for(550ms);

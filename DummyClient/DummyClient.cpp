@@ -1,8 +1,8 @@
 ﻿#include "pch.h"
 #include <iostream>
-#include "ClientPacketHandleler.h"
 #include "Session.h"
 #include "Service.h"
+#include "ServerPacketHandler.h"
 
 class ServerSession : public PacketSession
 {
@@ -23,11 +23,18 @@ public:
 	
 	void OnRecvPacket(BYTE* buffer, int32 len) override
 	{
-		ClientPacketHandleler::HandlePacket(buffer, len);
+		PacketSessionRef session = GetPacketSessionRef();
+
+		//정상적인지 확인 필요
+		//PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer, len);
+		
+		ServerPacketHandler::HandlePacket(session, buffer, len);
 	}
 };
 int main()
 {
+	ServerPacketHandler::Init();
+
 	this_thread::sleep_for(1s);
 	ClientServiceRef service = MakeShared<ClientService>(
 	NetAddress(L"127.0.0.1", 7777),
