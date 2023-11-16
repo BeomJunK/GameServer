@@ -1,0 +1,198 @@
+﻿Protocol.proto(4,1): warning G7CF62709: Import Enum.proto is unused.
+  #pragma once
+  #include "Protocol.pb.h"
+  
+  using PacketHandlerFunc = std::function<bool(PacketSessionRef&, BYTE*, int32)>;
+  extern PacketHandlerFunc GPacketHandler[UINT16_MAX];
+  
+  enum : uint16
+  {
+  	PKT_C_LOGIN = 1000,
+  	PKT_S_LOGIN = 1001,
+  	PKT_C_ENTER_GAME = 1002,
+  	PKT_S_ENTER_GAME = 1003,
+  	PKT_C_CHAT = 1004,
+  	PKT_S_CHAT = 1005,
+  };
+  
+  // Custom Handlers
+  bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
+  bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt);
+  bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt);
+  bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt);
+  
+  class ClientPacketHandler
+  {
+  public:
+  	static void Init()
+  	{
+  		for (int32 i = 0; i < UINT16_MAX; i++)
+  			GPacketHandler[i] = Handle_INVALID;
+  		GPacketHandler[PKT_C_LOGIN] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_LOGIN>(Handle_C_LOGIN, session, buffer, len); };
+  		GPacketHandler[PKT_C_ENTER_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_ENTER_GAME>(Handle_C_ENTER_GAME, session, buffer, len); };
+  		GPacketHandler[PKT_C_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_CHAT>(Handle_C_CHAT, session, buffer, len); };
+  	}
+  
+  	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
+  	{
+  		PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
+  		return GPacketHandler[header->id](session, buffer, len);
+  	}
+  	static SendBufferRef MakeSendBuffer(Protocol::S_LOGIN& pkt) { return MakeSendBuffer(pkt, PKT_S_LOGIN); }
+  	static SendBufferRef MakeSendBuffer(Protocol::S_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_S_ENTER_GAME); }
+  	static SendBufferRef MakeSendBuffer(Protocol::S_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_S_CHAT); }
+  
+  private:
+  	template<typename PacketType, typename ProcessFunc>
+  	static bool HandlePacket(ProcessFunc func, PacketSessionRef& session, BYTE* buffer, int32 len)
+  	{
+  		PacketType pkt;
+  		if (pkt.ParseFromArray(buffer + sizeof(PacketHeader), len - sizeof(PacketHeader)) == false)
+  			return false;
+  
+  		return func(session, pkt);
+  	}
+  
+  	template<typename T>
+  	static SendBufferRef MakeSendBuffer(T& pkt, uint16 pktId)
+  	{
+  		const uint16 dataSize = static_cast<uint16>(pkt.ByteSizeLong());
+  		const uint16 packetSize = dataSize + sizeof(PacketHeader);
+  
+  		SendBufferRef sendBuffer = GSendBufferManager->Open(packetSize);
+  		PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
+  		header->size = packetSize;
+  		header->id = pktId;
+  		ASSERT_CRASH(pkt.SerializeToArray(&header[1], dataSize));
+  		sendBuffer->Close(packetSize);
+  
+  		return sendBuffer;
+  	}
+  };
+  #pragma once
+  #include "Protocol.pb.h"
+  
+  using PacketHandlerFunc = std::function<bool(PacketSessionRef&, BYTE*, int32)>;
+  extern PacketHandlerFunc GPacketHandler[UINT16_MAX];
+  
+  enum : uint16
+  {
+  	PKT_C_LOGIN = 1000,
+  	PKT_S_LOGIN = 1001,
+  	PKT_C_ENTER_GAME = 1002,
+  	PKT_S_ENTER_GAME = 1003,
+  	PKT_C_CHAT = 1004,
+  	PKT_S_CHAT = 1005,
+  };
+  
+  // Custom Handlers
+  bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
+  bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt);
+  bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt);
+  bool Handle_S_CHAT(PacketSessionRef& session, Protocol::S_CHAT& pkt);
+  
+  class ServerPacketHandler
+  {
+  public:
+  	static void Init()
+  	{
+  		for (int32 i = 0; i < UINT16_MAX; i++)
+  			GPacketHandler[i] = Handle_INVALID;
+  		GPacketHandler[PKT_S_LOGIN] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_LOGIN>(Handle_S_LOGIN, session, buffer, len); };
+  		GPacketHandler[PKT_S_ENTER_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_ENTER_GAME>(Handle_S_ENTER_GAME, session, buffer, len); };
+  		GPacketHandler[PKT_S_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_CHAT>(Handle_S_CHAT, session, buffer, len); };
+  	}
+  
+  	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
+  	{
+  		PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
+  		return GPacketHandler[header->id](session, buffer, len);
+  	}
+  	static SendBufferRef MakeSendBuffer(Protocol::C_LOGIN& pkt) { return MakeSendBuffer(pkt, PKT_C_LOGIN); }
+  	static SendBufferRef MakeSendBuffer(Protocol::C_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_C_ENTER_GAME); }
+  	static SendBufferRef MakeSendBuffer(Protocol::C_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_C_CHAT); }
+  
+  private:
+  	template<typename PacketType, typename ProcessFunc>
+  	static bool HandlePacket(ProcessFunc func, PacketSessionRef& session, BYTE* buffer, int32 len)
+  	{
+  		PacketType pkt;
+  		if (pkt.ParseFromArray(buffer + sizeof(PacketHeader), len - sizeof(PacketHeader)) == false)
+  			return false;
+  
+  		return func(session, pkt);
+  	}
+  
+  	template<typename T>
+  	static SendBufferRef MakeSendBuffer(T& pkt, uint16 pktId)
+  	{
+  		const uint16 dataSize = static_cast<uint16>(pkt.ByteSizeLong());
+  		const uint16 packetSize = dataSize + sizeof(PacketHeader);
+  
+  		SendBufferRef sendBuffer = GSendBufferManager->Open(packetSize);
+  		PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
+  		header->size = packetSize;
+  		header->id = pktId;
+  		ASSERT_CRASH(pkt.SerializeToArray(&header[1], dataSize));
+  		sendBuffer->Close(packetSize);
+  
+  		return sendBuffer;
+  	}
+  };
+  C:Enum.pb.h
+  1개 파일이 복사되었습니다.
+  C:Enum.pb.cc
+  1개 파일이 복사되었습니다.
+  C:Struct.pb.h
+  1개 파일이 복사되었습니다.
+  C:Struct.pb.cc
+  1개 파일이 복사되었습니다.
+  C:Protocol.pb.h
+  1개 파일이 복사되었습니다.
+  C:Protocol.pb.cc
+  1개 파일이 복사되었습니다.
+  C:ClientPacketHandler.h
+  1개 파일이 복사되었습니다.
+  C:Enum.pb.h
+  1개 파일이 복사되었습니다.
+  C:Enum.pb.cc
+  1개 파일이 복사되었습니다.
+  C:Struct.pb.h
+  1개 파일이 복사되었습니다.
+  C:Struct.pb.cc
+  1개 파일이 복사되었습니다.
+  C:Protocol.pb.h
+  1개 파일이 복사되었습니다.
+  C:Protocol.pb.cc
+  1개 파일이 복사되었습니다.
+  C:ServerPacketHandler.h
+  1개 파일이 복사되었습니다.
+  계속하려면 아무 키나 누르십시오 . . . 
+  ClientPacketHandler.cpp
+C:\Users\kkk\Desktop\GameServer\GameServer\ClientPacketHandler.cpp(4,32): error C4430: 형식 지정자가 없습니다. int로 가정합니다. 참고: C++에서는 기본 int를 지원하지 않습니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\ClientPacketHandler.cpp(4,18): error C2146: 구문 오류: ';'이(가) 'GPacketHandler' 식별자 앞에 없습니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\ClientPacketHandler.cpp(10,57): error C2039: 'C_TEST': 'Protocol'의 멤버가 아닙니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\Protocol.pb.h(86): message : 'Protocol' 선언을 참조하십시오.
+C:\Users\kkk\Desktop\GameServer\GameServer\ClientPacketHandler.cpp(10,63): error C2061: 구문 오류: 식별자 'C_TEST'
+  GameServer.cpp
+C:\Users\kkk\Desktop\GameServer\ServerCore\Service.h(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+C:\Users\kkk\Desktop\GameServer\GameServer\GameServer.cpp(35,13): error C2039: 'S_TEST': 'Protocol'의 멤버가 아닙니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\Protocol.pb.h(86): message : 'Protocol' 선언을 참조하십시오.
+C:\Users\kkk\Desktop\GameServer\GameServer\GameServer.cpp(35,20): error C2065: 'S_TEST': 선언되지 않은 식별자입니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\GameServer.cpp(35,20): error C2146: 구문 오류: ';'이(가) 'pkt' 식별자 앞에 없습니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\GameServer.cpp(35,20): error C2065: 'pkt': 선언되지 않은 식별자입니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\GameServer.cpp(36,3): error C2065: 'pkt': 선언되지 않은 식별자입니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\GameServer.cpp(37,3): error C2065: 'pkt': 선언되지 않은 식별자입니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\GameServer.cpp(38,3): error C2065: 'pkt': 선언되지 않은 식별자입니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\GameServer.cpp(40,15): error C2065: 'pkt': 선언되지 않은 식별자입니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\GameServer.cpp(41,7): error C3536: 'buf': 초기화되기 전에 사용할 수 없습니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\GameServer.cpp(46,15): error C2065: 'pkt': 선언되지 않은 식별자입니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\GameServer.cpp(47,7): error C3536: 'buf': 초기화되기 전에 사용할 수 없습니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\GameServer.cpp(51,51): error C2039: 'MakeSendBffer': 'ClientPacketHandler'의 멤버가 아닙니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\ClientPacketHandler.h(23): message : 'ClientPacketHandler' 선언을 참조하십시오.
+C:\Users\kkk\Desktop\GameServer\GameServer\GameServer.cpp(51,65): error C2065: 'pkt': 선언되지 않은 식별자입니다.
+C:\Users\kkk\Desktop\GameServer\GameServer\GameServer.cpp(51,64): error C3861: 'MakeSendBffer': 식별자를 찾을 수 없습니다.
+  GameSession.cpp
+C:\Users\kkk\Desktop\GameServer\GameServer\GameSession.cpp(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+  GameSessionManager.cpp
+  코드를 생성하고 있습니다...

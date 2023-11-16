@@ -1,0 +1,46 @@
+﻿  pch.cpp
+C:\Users\kkk\Desktop\GameServer\ServerCore\SocketUtils.h(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+C:\Users\kkk\Desktop\GameServer\ServerCore\NetAddress.h(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+C:\Users\kkk\Desktop\GameServer\ServerCore\RecvBuffer.h(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+C:\Users\kkk\Desktop\GameServer\ServerCore\SendBuffer.h(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+C:\Users\kkk\Desktop\GameServer\ServerCore\Session.h(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+C:\Users\kkk\Desktop\GameServer\ServerCore\IocpEvent.h(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+  Allocator.cpp
+C:\Users\kkk\Desktop\GameServer\ServerCore\Allocator.cpp(25,56): warning C4244: '인수': 'int64'에서 'SIZE_T'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  BufferReader.cpp
+  BufferWriter.cpp
+  CoreGlobal.cpp
+  CorePch.cpp
+  CoreTLS.cpp
+C:\Users\kkk\Desktop\GameServer\ServerCore\CoreTLS.cpp(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+  DeadLockProfiler.cpp
+  IocpCore.cpp
+C:\Users\kkk\Desktop\GameServer\ServerCore\IocpCore.cpp(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+  IocpEvent.cpp
+  Listener.cpp
+C:\Users\kkk\Desktop\GameServer\ServerCore\Listener.cpp(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+C:\Users\kkk\Desktop\GameServer\ServerCore\Service.h(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+  Lock.cpp
+  Memory.cpp
+C:\Users\kkk\Desktop\GameServer\ServerCore\Memory.cpp(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+  MemoryPool.cpp
+  NetAddress.cpp
+  ObjectPool.cpp
+  RecvBuffer.cpp
+C:\Users\kkk\Desktop\GameServer\ServerCore\RecvBuffer.cpp(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+  RefCounting.cpp
+  SendBuffer.cpp
+C:\Users\kkk\Desktop\GameServer\ServerCore\SendBuffer.cpp(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+  Service.cpp
+C:\Users\kkk\Desktop\GameServer\ServerCore\Service.cpp(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+C:\Users\kkk\Desktop\GameServer\ServerCore\Service.h(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+  Session.cpp
+C:\Users\kkk\Desktop\GameServer\ServerCore\Session.cpp(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+C:\Users\kkk\Desktop\GameServer\ServerCore\Service.h(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+  코드를 생성하고 있습니다...
+  컴파일하고 있습니다...
+  SocketUtils.cpp
+C:\Users\kkk\Desktop\GameServer\ServerCore\SocketUtils.cpp(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+  ThreadManager.cpp
+  코드를 생성하고 있습니다...
+  ServerCore.vcxproj -> C:\Users\kkk\Desktop\GameServer\Libraries\Libs\ServerCore\Debug\ServerCore.lib

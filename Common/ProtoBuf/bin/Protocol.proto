@@ -22,6 +22,8 @@ message S_TEST
 	uint32 hp = 2;
 	uint32 attack = 3;
 	repeated BuffData buffs = 4;
+
+	string name = 5;
 }
 
 message S_LOGIN

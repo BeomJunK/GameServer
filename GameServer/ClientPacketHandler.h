@@ -6,7 +6,7 @@ extern PacketHandleFunc GPacketHandler[UINT16_MAX];
 
 enum
 {
-    //자동화
+    //�ڵ�ȭ
     PKT_C_TEST = 1000,
     PKT_C_MOVE = 1001,
     PKT_S_TEST = 1002,
@@ -35,7 +35,7 @@ public:
         return GPacketHandler[header->id](session, buffer, len);
     }
 
-    //자동화
+    //�ڵ�ȭ
     static SendBufferRef MakeSendBffer(Protocol::S_TEST& pkt) { return MakeSendBuffer(pkt, PKT_S_TEST); }
     static SendBufferRef MakeSendBffer(Protocol::S_LOGIN& pkt) { return MakeSendBuffer(pkt, PKT_S_LOGIN); }
     
