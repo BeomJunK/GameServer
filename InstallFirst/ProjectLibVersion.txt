@@ -1,0 +1,2 @@
+VisualStudio - 2019
+Protobuf - libprotoc 3.21.12
