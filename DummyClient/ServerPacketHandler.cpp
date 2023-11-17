@@ -9,14 +9,8 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
     // TODO : Log
     return false;
 }
-
-bool Handle_C_TEST(PacketSessionRef& session, Protocol::C_TEST& pkt)
+bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 {
-    return false;
-}
-
-bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt)
-{
-    return false;
+	return false;
 }
 

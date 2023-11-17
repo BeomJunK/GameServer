@@ -1,20 +1,27 @@
 #include "pch.h"
 #include "ClientPacketHandler.h"
 
-PacketHandleFunc GPacketHandler[UINT16_MAX];
+PacketHandlerFunc GPacketHandler[UINT16_MAX];
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
 	return false;
 }
+bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
+{
+	return false;
+}
 
-bool Handle_C_TEST(PacketSessionRef& session, Protocol::C_TEST& pkt)
+bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 {
 	return false;
 }
-bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt)
+
+bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt)
 {
 	return false;
 }
+
+
 
 
 

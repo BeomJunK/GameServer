@@ -1,0 +1,1 @@
+vcpkg 설치vcpkg 환경변수 path에 vcpkg경로 등록cmd - cd vcpkgcmd - vcpkg install protobuf:x64-windowscmd - vcpkg list로 설치 됐나 확인.vcpkg 경로로 가서 빌드된 파일들 복사필요한 파일 들:libprotobufd.liblibprotobuf.libprotoc.exe비쥬얼스튜디오로 와서 참조디렉터리 라이브러리 연결시켜주기!!!속성 - c++ 코드생성탭에서 런타임 라이브러리 /MDd 환경으로 세팅해줘야 됨
