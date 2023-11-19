@@ -18,17 +18,20 @@ public:
 	
 	void OnSend(DWORD len) override
 	{
-		cout << "데이터  보냄" << len << endl;
 	}
 	
 	void OnRecvPacket(BYTE* buffer, int32 len) override
 	{
 		PacketSessionRef session = GetPacketSessionRef();
 
-		//정상적인지 확인 필요
-		//PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer, len);
-		
 		ServerPacketHandler::HandlePacket(session, buffer, len);
+	}
+	void OnConnected() override
+	{
+		Protocol::C_LOGIN pkt;
+		auto sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+
+		Send(sendBuffer);
 	}
 };
 int main()
@@ -40,7 +43,7 @@ int main()
 	NetAddress(L"127.0.0.1", 7777),
 	MakeShared<IocpCore>(),
 	MakeShared<ServerSession>,
-	1
+	2
 	);
 
 	ASSERT_CRASH(service->Start());
@@ -54,6 +57,17 @@ int main()
 				service->GetIocpCore()->Dispatch();
 			}
 		});
+	}
+
+	Protocol::C_CHAT pkt;
+	pkt.set_msg(u8"Hello");
+	auto sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+	
+	while(true)
+	{
+		service->Broadcast(sendBuffer);
+		this_thread::sleep_for(1s);
+		
 	}
 
 	GThreadManager->Join();
