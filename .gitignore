@@ -5,8 +5,11 @@
 /DummyClient//x64
 /DummyClient/Debug
 /DummyClient/Release
+/GameServer/Debug
+/GameServer/Release
 /Common/Protobuf/bin/libprotoc.lib
 x64
 /Binary
 /.idea
 /Libraries/Debug
+/ServerCore/Debug
