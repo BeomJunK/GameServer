@@ -16,7 +16,7 @@ int main()
 		healJob._healValue = 10;
 
 
-		healJob.Excute();
+		healJob.Execute();
 	}
 	ServerServiceRef service = MakeShared<ServerService>(
 	NetAddress(L"127.0.0.1", 7777),

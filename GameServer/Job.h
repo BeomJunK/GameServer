@@ -2,13 +2,13 @@
 class IJob
 {
 public:
-	virtual void Excute() {}
+	virtual void Execute() {}
 };
 
 class HealJob : public IJob
 {
 public:
-	virtual void Excute() override
+	virtual void Execute() override
 	{
 		cout << _target << " ÇÑÅ× Èú " << _healValue << endl;
 	}
