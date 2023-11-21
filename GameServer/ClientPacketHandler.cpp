@@ -67,7 +67,8 @@ bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 
 	//read only로 쓸거기때문에 스레드safe 하다고 가정
 	PlayerRef player = gameSession->_players[index];
-	GRoom.Enter(player);
+
+	GRoom.PushJob(&Room::Enter, player);
 
 	Protocol::S_ENTER_GAME enterPkt;
 	enterPkt.set_success(true);
@@ -85,8 +86,7 @@ bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt)
 	chatPkt.set_msg(pkt.msg());
 
 	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(chatPkt);
-	GRoom.Broadcast(sendBuffer);
-	
+	GRoom.PushJob(&Room::Broadcast, sendBuffer);
 	return true;
 }
 

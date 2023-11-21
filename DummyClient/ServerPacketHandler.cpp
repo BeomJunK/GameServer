@@ -17,9 +17,8 @@ bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt)
     if(pkt.players().size() == 0)
     {
         //캐릭터 생성 창
-        
     }
-
+    cout << "입장" << endl;
     //게임 입장
     Protocol::C_ENTER_GAME enterPkt;
     enterPkt.set_playerindex(0); //첫번째 캐릭으로 입장

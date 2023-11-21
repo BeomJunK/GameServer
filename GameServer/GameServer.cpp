@@ -7,16 +7,29 @@
 #include "Job.h"
 #include "Room.h"
 
+void HealByValue(int64 target, int32 value, int32 val2)
+{
+	cout << target << "한테 힐: " << value <<" 대미지 :" << val2 << endl;
+}
+class Knight
+{
+public:
+	void HealMe(int32 val)
+	{
+		cout << "힐" << val << endl;
+	}
+};
 
 int main()
 {
 	{
-		HealJob healJob;
-		healJob._target = 1;
-		healJob._healValue = 10;
-
-
-		healJob.Execute();
+		FuncJob<void, int64, int32, int32> job(HealByValue,100, 10, -2);
+		job.Execute();
+	}
+	{
+		Knight k;
+		MemberJob< Knight, void, int32> memJob(&k, &Knight::HealMe, 10);
+		memJob.Execute();
 	}
 	ServerServiceRef service = MakeShared<ServerService>(
 	NetAddress(L"127.0.0.1", 7777),

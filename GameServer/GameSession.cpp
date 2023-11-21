@@ -6,16 +6,16 @@
 void GameSession::OnConnected()
 {
     wcout.imbue(locale("kor"));
-    wstring str = L"í´ë¼ ì ‘ì†";
+    wstring str = L"Å¬¶ó Á¢¼Ó";
     wcout << str << endl;
     GSessionManager.Add(static_pointer_cast<GameSession>(shared_from_this()));
 }
 
 void GameSession::OnRecvPacket(BYTE* buffer, int32 len) 
 {
-    PacketSessionRef session = PacketSessionRef();
+    PacketSessionRef session = GetPacketSessionRef();
 
-    //TODO : PacketIdì²´í¬ í•„ìš”
+    //TODO : PacketIdÃ¼Å© ÇÊ¿ä
     //PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 
     ClientPacketHandler::HandlePacket(session, buffer, len);
@@ -26,6 +26,6 @@ void GameSession::OnSend(DWORD len)
 
 void GameSession::OnDisconnected()
 {
-    wcout << L"í´ë¼ ëŠìŒ" << endl;
+    wcout << L"Å¬¶ó ²÷À½" << endl;
     GSessionManager.Remove(static_pointer_cast<GameSession>(shared_from_this()));
 }
