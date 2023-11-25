@@ -8,5 +8,5 @@ extern class SendBufferManager* GSendBufferManager;
 
 extern class DeadLockProfiler* GDeadLockProfiler;
 
-
+extern class GlobalQueue* GGlobalQueue;
 

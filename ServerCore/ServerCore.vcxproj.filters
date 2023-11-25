@@ -16,18 +16,15 @@
     <Filter Include="Memory">
       <UniqueIdentifier>{80bacc96-9eae-43f2-b3a9-b60a83ddd499}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Job">
+      <UniqueIdentifier>{75e8705d-fd76-4df9-8961-db7edb6d57eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{0d41e1e1-18f1-432c-a880-ec2965023236}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CoreGlobal.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="CoreMacro.h">
-      <Filter>Main</Filter>
-    </ClInclude>
     <ClInclude Include="CorePch.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="CoreTLS.h">
       <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
@@ -38,9 +35,6 @@
     </ClInclude>
     <ClInclude Include="Lock.h">
       <Filter>Thread</Filter>
-    </ClInclude>
-    <ClInclude Include="Types.h">
-      <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="DeadLockProfiler.h">
       <Filter>Thread</Filter>
@@ -96,15 +90,34 @@
     <ClInclude Include="BufferReader.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Job.h">
+      <Filter>Job</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="JobQueue.h">
+      <Filter>Job</Filter>
+    </ClInclude>
+    <ClInclude Include="LockQueue.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalQueue.h">
+      <Filter>Job</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreGlobal.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreTLS.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreMacro.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CoreGlobal.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
     <ClCompile Include="CorePch.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="CoreTLS.cpp">
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
@@ -167,8 +180,29 @@
     <ClCompile Include="BufferWriter.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Job.cpp">
+      <Filter>Job</Filter>
+    </ClCompile>
+    <ClCompile Include="JobQueue.cpp">
+      <Filter>Job</Filter>
+    </ClCompile>
+    <ClCompile Include="LockQueue.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalQueue.cpp">
+      <Filter>Job</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreGlobal.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreTLS.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ServerCore.rc" />
   </ItemGroup>
 </Project>

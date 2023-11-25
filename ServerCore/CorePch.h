@@ -33,6 +33,7 @@ using namespace std;
 //	Lock
 //----------
 #include "Lock.h"
+#include "DeadLockProfiler.h"
 
 //----------
 //	Thread
@@ -61,4 +62,10 @@ using namespace std;
 //----------
 #include "Session.h"
 
+//----------
+//	Common
+//----------
+#include "JobQueue.h"
+#include "LockQueue.h"
+#include "GlobalQueue.h"
 

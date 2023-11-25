@@ -7,11 +7,11 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{37e6aaa6-0769-426b-aa67-d42e60cd791c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Main\Protocol">
-      <UniqueIdentifier>{efd43c93-8191-48c3-99a9-4bda600aaf79}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameContents">
       <UniqueIdentifier>{ce501182-18a1-47dc-a5d4-20b0a31e7815}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Protocol">
+      <UniqueIdentifier>{efd43c93-8191-48c3-99a9-4bda600aaf79}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -28,24 +28,21 @@
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="Protocol.pb.cc">
-      <Filter>Main\Protocol</Filter>
+      <Filter>Protocol</Filter>
     </ClCompile>
     <ClCompile Include="Enum.pb.cc">
-      <Filter>Main\Protocol</Filter>
+      <Filter>Protocol</Filter>
     </ClCompile>
     <ClCompile Include="Struct.pb.cc">
-      <Filter>Main\Protocol</Filter>
+      <Filter>Protocol</Filter>
     </ClCompile>
     <ClCompile Include="ClientPacketHandler.cpp">
-      <Filter>Main\Protocol</Filter>
+      <Filter>Protocol</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>GameContents</Filter>
     </ClCompile>
     <ClCompile Include="Room.cpp">
-      <Filter>GameContents</Filter>
-    </ClCompile>
-    <ClCompile Include="Job.cpp">
       <Filter>GameContents</Filter>
     </ClCompile>
   </ItemGroup>
@@ -60,16 +57,16 @@
       <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="Protocol.pb.h">
-      <Filter>Main\Protocol</Filter>
+      <Filter>Protocol</Filter>
     </ClInclude>
     <ClInclude Include="Enum.pb.h">
-      <Filter>Main\Protocol</Filter>
+      <Filter>Protocol</Filter>
     </ClInclude>
     <ClInclude Include="Struct.pb.h">
-      <Filter>Main\Protocol</Filter>
+      <Filter>Protocol</Filter>
     </ClInclude>
     <ClInclude Include="ClientPacketHandler.h">
-      <Filter>Main\Protocol</Filter>
+      <Filter>Protocol</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>GameContents</Filter>
@@ -77,22 +74,19 @@
     <ClInclude Include="Room.h">
       <Filter>GameContents</Filter>
     </ClInclude>
-    <ClInclude Include="Job.h">
-      <Filter>GameContents</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\ProtoBuf\bin\GenPackets.bat">
-      <Filter>Main\Protocol</Filter>
+      <Filter>Protocol</Filter>
     </None>
     <None Include="..\Common\ProtoBuf\bin\Enum.proto">
-      <Filter>Main\Protocol</Filter>
+      <Filter>Protocol</Filter>
     </None>
     <None Include="..\Common\ProtoBuf\bin\Protocol.proto">
-      <Filter>Main\Protocol</Filter>
+      <Filter>Protocol</Filter>
     </None>
     <None Include="..\Common\ProtoBuf\bin\Struct.proto">
-      <Filter>Main\Protocol</Filter>
+      <Filter>Protocol</Filter>
     </None>
   </ItemGroup>
 </Project>

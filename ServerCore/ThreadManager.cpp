@@ -45,3 +45,21 @@ void ThreadManager::InitTLS()
 void ThreadManager::DestroyTLS()
 {
 }
+
+void ThreadManager::DoGlobalQueueWork()
+{
+	while (true)
+	{
+		uint64 now = ::GetTickCount64();
+		if (now > LEndThickCount)
+			break;
+
+		JobQueueRef jobQueue = GGlobalQueue->Pop();
+		if (jobQueue == nullptr)
+			break;
+
+		jobQueue->Execute();
+
+
+	}
+}
