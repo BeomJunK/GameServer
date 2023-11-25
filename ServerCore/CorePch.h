@@ -73,3 +73,8 @@ using namespace std;
 //----------
 #include "JobQueue.h"
 #include "JobTimer.h"
+
+//----------
+//	DB
+//----------
+#include "DBConnectionPool.h"

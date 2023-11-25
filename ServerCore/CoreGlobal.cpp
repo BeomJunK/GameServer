@@ -7,6 +7,7 @@ SendBufferManager* GSendBufferManager = nullptr;
 DeadLockProfiler* GDeadLockProfiler = nullptr;
 GlobalQueue* GGlobalQueue = nullptr;
 JobTimer* GJobTimer = nullptr;
+DBConnectionPool* GDBConnectionPool = nullptr;
 
 class CoreGlobal
 {
@@ -19,6 +20,7 @@ public:
         GDeadLockProfiler = new DeadLockProfiler();
         GGlobalQueue = new GlobalQueue();
         GJobTimer = new JobTimer();
+        GDBConnectionPool = new DBConnectionPool();
 
         SocketUtils::Init();
     }
@@ -27,9 +29,10 @@ public:
         delete GThreadManager;
         delete GMemory;
         delete GSendBufferManager;
-        delete GDeadLockProfiler;
         delete GGlobalQueue;
         delete GJobTimer;
+        delete GDeadLockProfiler;
+        delete GDBConnectionPool;
         SocketUtils::Clear();
     }
 } GCoreGlobal;

@@ -33,7 +33,7 @@ public:
 private:
 	USE_LOCK;
 	Priority_queue<TimerItem> _items;
-	Atomic<bool> _distributing = false; //½ÇÇàÀ» ÇÏ°í ÀÖ´ÂÁö ¿©ºÎ
+	Atomic<bool> _distributing = false; //ì‹¤í–‰ì„ í•˜ê³  ìˆëŠ”ì§€ ì—¬ë¶€
 
 };
 
