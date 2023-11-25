@@ -65,7 +65,11 @@ using namespace std;
 //----------
 //	Common
 //----------
-#include "JobQueue.h"
 #include "LockQueue.h"
 #include "GlobalQueue.h"
 
+//----------
+//	Job
+//----------
+#include "JobQueue.h"
+#include "JobTimer.h"

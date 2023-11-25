@@ -37,19 +37,7 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 
 		gameSession->_players.push_back(playerRef);
 	}
-	{
-		auto player = loginPkt.add_players();
-		player->set_name(u8"db에서 긁어온 이름2");
-		player->set_playertype(Protocol::PLAYER_TYPE_ARCHER);
 
-		PlayerRef playerRef = MakeShared<Player>();
-		playerRef->playerId = idGenerator++;
-		playerRef->name = player->name();
-		playerRef->type = player->playertype();
-		playerRef->ownerSession = gameSession;
-
-		gameSession->_players.push_back(playerRef);
-	}
 
 	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(loginPkt);
 	session->Send(sendBuffer);
@@ -63,13 +51,15 @@ bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 
 	uint64 index = pkt.playerindex();
 
-	//TODO : Validation 클라에서 보낸건 절대 신뢰x
+	//TODO : Validation Check  클라에서 보낸건 절대 신뢰x
 
 	//read only로 쓸거기때문에 스레드safe 하다고 가정
-	PlayerRef player = gameSession->_players[index];
+	gameSession->_currentPlayer = gameSession->_players[index];
+	gameSession->_room = GRoom;
 
-	GRoom->DoAsync(&Room::Enter, player);
+	GRoom->DoAsync(&Room::Enter, gameSession->_currentPlayer);
 
+	//접속 확인 들어와도 된다 신호
 	Protocol::S_ENTER_GAME enterPkt;
 	enterPkt.set_success(true);
 	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(enterPkt);

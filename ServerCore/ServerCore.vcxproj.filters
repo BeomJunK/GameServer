@@ -115,6 +115,9 @@
     <ClInclude Include="CoreMacro.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="JobTimer.h">
+      <Filter>Job</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CorePch.cpp">
@@ -197,6 +200,9 @@
     </ClCompile>
     <ClCompile Include="CoreTLS.cpp">
       <Filter>Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="JobTimer.cpp">
+      <Filter>Job</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

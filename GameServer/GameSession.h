@@ -14,5 +14,9 @@ public:
     void OnDisconnected() override;
 
 public:
-    Vector<PlayerRef> _players;
+    Vector<PlayerRef> _players; //접속중인 유저목록(?)
+
+    PlayerRef _currentPlayer; //내가 접속중인 플레이어
+    weak_ptr<class Room> _room; //어떤룸인지 모르니 들고잇기
+
 };

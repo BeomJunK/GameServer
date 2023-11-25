@@ -15,17 +15,28 @@ void DoWorkerJob(ServerServiceRef& service)
 {
 	while (true)
 	{
+		//방식은 프로젝트마다 다름 정답은 없다.
 		LEndThickCount = ::GetTickCount64() + WORKER_THICK;
 
-		//일감 기다리다 없으면 빠져나와 JobQueue비우기
-		//프로젝트마다 다름
+		//통신관련 처리 
 		service->GetIocpCore()->Dispatch(10);
 
+		//통신관련 일감 기다리다 없으면 빠져나와 JobQueue비우기
+
+		//당장 실행해야할 일들 처리
 		ThreadManager::DoGlobalQueueWork();
+
+		//예약된 할 일들 처리
+		ThreadManager::DistributeReserve();
 	}
 }
 int main()
 {
+	GRoom->DoTimer(3000, []() {cout << "Hello Timer 3000" << endl; });
+	GRoom->DoTimer(2000, []() {cout << "Hello Timer 2000" << endl; });
+	GRoom->DoTimer(1000, []() {cout << "Hello Timer 1000" << endl; });
+
+
 	ServerServiceRef service = MakeShared<ServerService>(
 	NetAddress(L"127.0.0.1", 7777),
 	MakeShared<IocpCore>(),
