@@ -13,6 +13,9 @@
     <Filter Include="Protocol">
       <UniqueIdentifier>{efd43c93-8191-48c3-99a9-4bda600aaf79}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DB">
+      <UniqueIdentifier>{d3e0f933-d6bf-4682-8e21-9b6c436dc37f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -88,5 +91,10 @@
     <None Include="..\Common\ProtoBuf\bin\Struct.proto">
       <Filter>Protocol</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="GameDB.xml">
+      <Filter>DB</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

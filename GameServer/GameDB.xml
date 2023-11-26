@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameDB>
+  //DB 테이블 표현
+  <Table name ="Gold">
+    <Column name ="id" type ="int" notnull="true" />
+    <Column name ="gold" type ="int" notnull="false" />
+    <Column name ="name" type ="navchar(50)" notnull="false" />
+    <Column name ="createDate" type ="dateTime" notnull="false" />
+    <Index type="clustered">
+      <PrimaryKey/>
+      <Column name ="id" />
+    </Index>
+    
+  </Table>
+  
+  <!-- 데이터 꺼내기 테스트 프로시저 -->
+  <Procedure name = "spInsertGold">
+    <Param name = "@gold" type="int"/>  
+    <Param name = "@anme" type="nvarchar(50)"/>  
+    <Param name = "@createDate" type="dateTime"/>
+    <Body>
+      <![CDATA[
+      INSERT INTO [dbo].[Gold]([gold], [name], [createDate]) VALUES(@gold, @name, @createDate);
+      ]]>
+    </Body>
+  </Procedure>
+
+  <!-- 데이터 받아오기 테스트 프로시저-->
+  <Procedure name = "spGetGold">
+    <Param name = "@gold" type="int"/>
+    <Body>
+      <![CDATA[
+      SELECT id, gold, name, createDate FROM [dbo].[Gold] WHERE gold = (@gold);
+      ]]>
+    </Body>
+  </Procedure>
+  
+</GameDB>
