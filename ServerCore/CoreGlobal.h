@@ -13,3 +13,5 @@ extern class GlobalQueue* GGlobalQueue;
 extern class JobTimer* GJobTimer;
 
 extern class DBConnectionPool* GDBConnectionPool;
+
+extern class ConsoleLog* GConsoleLogger;

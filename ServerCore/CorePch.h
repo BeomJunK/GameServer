@@ -78,3 +78,8 @@ using namespace std;
 //	DB
 //----------
 #include "DBConnectionPool.h"
+
+//----------
+//	 Logger
+//----------
+#include "ConsoleLog.h"
